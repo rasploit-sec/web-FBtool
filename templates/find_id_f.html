@@ -1,0 +1,46 @@
+{% import "module.html" as modul %}
+{% set nama = data.my_name() %}
+<!DOCTYPE html>
+<html>
+<head>
+	{{ modul.css() }}
+	<style type="text/css">
+		.gambar {
+			width: 75px;
+		}
+	</style>
+</head>
+<body>
+	{{ modul.navbar(nama) }}
+	{{ modul.nama("Find Id Friend") }}
+	<div class="col s12 container">
+		{{ modul.input(name="name", place="Full Name")}}
+		{{ modul.submit(id="tombol", text="find")}}
+	</div>
+	
+	<div class="center red-text" id="status" style="font-size: 20px">
+	</div>
+	<script type="text/javascript">
+		const tombol = $("#tombol");
+		tombol.on("click", function() {
+			const nama = $("#name").val();
+			if (nama == ""){
+				alert("Empty Full Name")
+			} else {
+				tombol.addClass("hide");
+				$("#status").html("Proccess")
+				$.ajax({
+					url: "/find_id_f?nama=" + nama.replace(" ", "+"),
+					success: function (x) {
+						const gambar = x.split("|")[1];
+						const id = x.split("|")[0];
+						$("#status").html("<img class='gambar z-depth-2' src='" + gambar + "'><br> ID: " + id);
+						tombol.removeClass("hide");
+					}
+				});
+			}
+		});
+
+	</script>
+</body>
+</html>

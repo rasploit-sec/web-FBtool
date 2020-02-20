@@ -1,0 +1,98 @@
+{% import "module.html" as modul %}
+<!DOCTYPE html>
+<html>
+<head>
+	{{ modul.css() }}
+</head>
+<body>
+	{{ modul.navbar(data.my_name()) }}
+	{{ modul.nama("Response Friend Requests") }}
+	<div class="col s12 container">
+		{{ modul.input(name="limit", type="number", place="Limit")}}
+	</div>
+	<div style="margin-bottom: 10px">
+		<label>
+			<input type="radio" name="pilih" id="pilih1" value="accept">
+			<span>Accept</span>
+		</label>
+		<label>
+			<input type="radio" name="pilih" id="pilih2" value="reject">
+			<span>Reject</span>
+		</label>
+	</div>
+	<div class="col s12 container">
+		{{ modul.submit(id="tombol")}}
+	</div>
+	<div class="center red-text" id="status" style="font-size: 20px">
+		
+	</div>
+
+	<script type="text/javascript">
+		window.metode = "";
+		$("#pilih1").on("click", function () {
+			window.metode = "Konfirmasi";
+		});
+		$("#pilih2").on("click", function () {
+			window.metode = "Hapus Permintaan";
+		});
+		let angka = 0;
+		let sts = $("#status");
+		let tombol = $("#tombol");
+		tombol.on("click", function (arg) {
+			metode = window.metode;
+			let limit = $("#limit").val();
+			if (limit == ""){
+				alert("Empty Limit");
+			} else if (metode == ""){
+				alert("Empty Select");
+			} else {
+				const ok = confirm("Kamu yakin?")
+				if (ok){
+					dump_sts("friends/center/requests",limit);
+				}
+			}
+		});
+
+		function dump_sts(x,y) {
+			tombol.addClass("hide");
+			sts.html("Getting Id");
+			$.ajax({
+  				url: "/get_sts",
+				type:"POST",
+				data:{
+					"url":"https://mbasic.facebook.com/" + x,
+					"limit" :y,
+					"str1":metode,
+					"str2":"Lihat selengkapnya",
+					"kondisi":"/",
+				},
+  				success: function( result ) {
+  					const data = result.split("|");
+  				complete: execute(data);
+  				}
+			});
+		}
+
+		function execute(x){
+			$.ajax({
+  				url: "/url",
+				type:"POST",
+				data:{
+					"url":x[angka],
+				},
+  				complete: function (y) {
+  					if (angka < x.length){
+  						angka += 1;
+  						sts.html("Proccess " + angka + "/" + x.length);
+  						execute(x);
+  					} else {
+  						tombol.removeClass("hide");
+  						angka = 0;
+  						sts.html("Done!")
+  					}
+  				}
+			});
+		}
+	</script>
+</body>
+</html>

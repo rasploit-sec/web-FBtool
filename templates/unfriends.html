@@ -1,0 +1,77 @@
+{% import "module.html" as modul %}
+<!DOCTYPE html>
+<html>
+<head>
+	{{ modul.css() }}
+</head>
+<body>
+	{{ modul.navbar(data.my_name()) }}
+	{{ modul.nama("Unfriends")}}
+	<div class="col s12 container">
+		{{ modul.input(name="limit", type="number", place="Limit")}}
+		{{ modul.submit(id="tombol")}}
+	</div>
+	<div class="center red-text" id="status" style="font-size: 20px">
+		
+	</div>
+	<script type="text/javascript">
+		const kuki = document.cookie.split(";")[0].replace('cookie="', "").replace('"', "");
+		let angka = 0;
+		let sts = $("#status");
+		let tombol = $("#tombol");
+		tombol.on("click", function (arg) {
+			// tombol.addClass("hide");
+			let limit = $("#limit").val();
+			if (limit == ""){
+				alert("Empty Limit");
+			} else {
+				const konfir = confirm("apakah kamu yakin akan menghapus temanmu sebanyak " + limit + "?");
+				if (konfir){
+					dump_sts("me/friends",limit);
+				}
+			}
+		});
+
+		function dump_sts(x,y) {
+			tombol.addClass("hide");
+			sts.html("Getting Id");
+			$.ajax({
+  				url: "/get_sts",
+				type:"POST",
+				data:{
+					"url":"https://mbasic.facebook.com/" + x,
+					"limit" :y,
+					"str1":"true",
+					"str2":"Lihat Teman Lain",
+					"kondisi":"fr_tab",
+				},
+  				success: function( result ) {
+  					const data = result.split("|");
+  					execute(data);
+  				}
+			});
+		}
+
+		function execute(x){
+			$.ajax({
+  				url: "/unfriends",
+				type:"POST",
+				data:{
+					"url":x[angka],
+				},
+  				complete: function (y) {
+  					if (angka < x.length){
+  						angka += 1;
+  						sts.html("Proccess " + angka + "/" + x.length);
+  						execute(x);
+  					} else {
+  						tombol.removeClass("hide");
+  						angka = 0;
+  						sts.html("Done!")
+  					}
+  				}
+			});
+		}
+	</script>
+</body>
+</html>

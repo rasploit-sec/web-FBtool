@@ -1,0 +1,52 @@
+{% import "module.html" as modul %}
+{% set nama = data.my_name() %}
+{% set img = data.my_bengeut() %}
+{% set id = data.my_id() %}
+<!DOCTYPE html>
+<html>
+<head>
+	{{modul.css()}}
+	<style type="text/css">
+		a {
+			color: white;
+			font-style: bold;
+		}
+	</style>
+</head>
+<body>
+	{{modul.navbar(nama)}}
+	<div class="center container">
+		<div style="padding-top: 10px; padding-left: 10px; padding-right: 10px">
+			<div class="hide-on-med-and-up row">
+				<div class="col s5">
+					<img class="z-depth-1 responsive-img" src="{{img}}" width="120px" height="120px">
+				</div>
+				<div class="col s6">
+					<br><b class="left">{{nama[:12]}}</b><br>
+					<b class="left">{{id}}</b>
+				</div>
+			</div>
+
+			<div class="hide-on-small-only row" style="padding-left: 200px; font-size: 20px" >
+				<div class="col s5">
+					<img class="z-depth-2 responsive-img" src="{{img}}" width="120px" height="120px">
+				</div>
+				<div class="col">
+					<br><b class="left">{{nama[:12]}}</b><br>
+					<b class="left">{{id}}</b>
+				</div>
+			</div>
+		</div>
+		{% set daftar = [('/find_id_f', 'Find Friend Id'), ('/like', 'Spam Like Friend Timeline'), ('/spamkomen_f', 'Spam Komen Friend Timeline'), ('/unfriends', 'Unfriends'), ('/response_f_requests', 'Response Friend Requests')] %}
+		{% for x in daftar %}
+			<div class="center z-depth-1 grey" style="padding: 5px;margin-bottom: 10px"><a href="{{x[0]}}">{{x[1]}}</a></div>
+		{% endfor %}
+	</div>
+	{# <form action="/get_sts" method="post">
+		<input type="text" name="url">
+		<input type="number" name="limit">
+		<button>tombol</button>
+	</form> #}
+	
+</body>
+</html>

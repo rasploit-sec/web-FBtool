@@ -1,0 +1,39 @@
+{% import "module.html" as modul %}
+<!DOCTYPE html>
+<html>
+<head>
+	{{ modul.css() }}
+</head>
+<body class="">
+  <div class="row container z-depth-2" style="padding-bottom: 8px;margin-top: 30px">
+    {% with msg = get_flashed_messages() %}
+      {% if msg %}
+        <p class="red-text">{{msg[0]}}</p>  
+      {% endif %}
+    {% endwith %}
+    <form action="" method="post" class="col s12">
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="kuki" name="kuki" type="text" class="validate" required="ISI WOY">
+          <label for="kuki">YOUR COOKIES</label>
+        </div>
+      </div>
+      <div class="center">
+      <p>
+        <label>
+          <input type="checkbox" required>
+          <span><a href="/syarat" target="_blank" style="color: blue">Saya telah membaca ini</a></span>
+        </label>
+      </p>
+	    <button class="btn waves-effect waves-light" id="tombol" type="submit" name="ter-klik" value="true">LOGIN
+	    <i class="material-icons right">send</i>
+	  	</button>
+	  	<p>Note: Author not save your account & checkpoint ditanggung penumpang</p>
+	  </div>
+	{#   <div class="video-container responsive-video">
+        <iframe src="https://www.youtube.com/embed/8fJCzGaffGM?rel=0" frameborder="0" allowfullscreen></iframe>
+      </div> #}
+    </form>
+  </div>
+</body>
+</html>

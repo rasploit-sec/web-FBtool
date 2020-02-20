@@ -1,0 +1,34 @@
+{% import "module.html" as modul %}
+{% set nama = data.my_name() %}
+<!DOCTYPE html>
+<html>
+<head>
+  {{ modul.css() }}
+  
+</head>
+<body>
+  {{modul.navbar(nama)}}
+  <div class="container">
+  <table class="striped">
+    <thead>
+      <tr>
+        <th>List Grup</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% if data.get_grup()|length == 1 %}
+        <tr><td>None</td></tr>
+      {% else %}
+        {% for x in data.get_grup() %}
+        <tr>
+          <td><a href="https://mbasic.facebook.com/{{x.get('href')}}">{{x.text}}</a></td>
+        </tr>
+        {% endfor %}
+      {% endif %}
+    </tbody>
+  </table>
+  
+  </div>
+</body>
+</html>

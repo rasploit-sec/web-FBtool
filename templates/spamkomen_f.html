@@ -1,0 +1,92 @@
+{% import "module.html" as modul %}
+<!DOCTYPE html>
+<html>
+<head>
+	{{ modul.css() }}
+</head>
+<body>
+	{{ modul.navbar(data.my_name()) }}
+	{{ modul.nama("Spam Komen Friend Timeline") }}
+	<div class="col s12 container">
+		{{ modul.input(name="id", place="ID Facebook")}}
+		{{ modul.input(name="komen", place="Isi Komentar")}}
+		{{ modul.input(name="limit", type="number", place="Limit")}}
+		{{ modul.submit(id="tombol")}}
+	</div>
+	<div class="center red-text" id="status" style="font-size: 20px">
+		
+	</div>
+
+	<script type="text/javascript">
+		const kuki = document.cookie.split(";")[0].replace('cookie="', "").replace('"', "");
+		let angka = 0;
+		let sts = $("#status");
+		let tombol = $("#tombol");
+		tombol.on("click", function (arg) {
+			// tombol.addClass("hide");
+			let id = $("#id").val();
+			let limit = $("#limit").val();
+			let komen = $("#komen").val();
+			if (limit == ""){
+				alert("Empty Limit");
+			} else if (id == ""){
+				alert("Empty Id");
+			} else if (komen == ""){
+				alert("Empty Komen");
+			} else if (limit > 100){
+				alert("max: 100")
+			} else if (limit < 1){
+				alert("min: 1")
+			} else {
+				dump_sts(id,limit);
+			}
+		});
+
+		function dump_sts(x,y) {
+			tombol.addClass("hide");
+			sts.html("Getting Post Id");
+			$.ajax({
+  				url: "/get_sts",
+				type:"POST",
+				data:{
+					"url":"https://mbasic.facebook.com/profile.php?id=" + x,
+					"limit" :y,
+					"str1":"Berita Lengkap",
+					"str2":"Lihat Berita Lain",
+					"kondisi":"s",
+				},
+  				success: function( result ) {
+  					const data = result.split("|");
+  					if (data.length <= 1){
+  						alert("pastikan akun anda telah berteman dengan target")
+  					}
+  					execute(data);
+  				}
+			});
+		}
+
+		function execute(x){
+			$.ajax({
+  				url: "/submit_url",
+				type:"POST",
+				data:{
+					"url":x[angka],
+					"komen":komen.value,
+					"kunci":"comment_text",
+				},
+  				complete: function (y) {
+  					if (angka < x.length){
+  						angka += 1;
+  						sts.html("Proccess " + angka + "/" + x.length);
+  						execute(x);
+  					} else {
+  						tombol.removeClass("hide");
+  						angka = 0;
+  						sts.html("Done!")
+  					}
+  				}
+			});
+		}
+	</script>
+</body>
+</html>
